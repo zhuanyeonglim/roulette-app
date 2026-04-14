@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "react-quill-new/dist/quill.snow.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: "Playfair Display", serif;
+    --font-sans: "Inter", sans-serif;
+    --font-handwriting: "Caveat", cursive;
+    --font-serif-elegant: "Cormorant Garamond", serif;
+    
+    --color-brand-maroon: #4a0404;
+    --color-brand-gold: #c5a059;
+    --color-brand-gold-light: #e2c28a;
+    
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    --background: #ffffff;
+    --foreground: #1a1a1a;
+    --card: #ffffff;
+    --card-foreground: #1a1a1a;
+    --popover: #ffffff;
+    --popover-foreground: #1a1a1a;
+    --primary: #4a0404;
+    --primary-foreground: #ffffff;
+    --secondary: #f4f4f4;
+    --secondary-foreground: #4a0404;
+    --muted: #f4f4f4;
+    --muted-foreground: #666666;
+    --accent: #c5a059;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --border: #e5e5e5;
+    --input: #e5e5e5;
+    --ring: #c5a059;
+    --radius: 0rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Custom Styles */
+.gold-text {
+  @apply text-brand-gold;
+}
+
+.maroon-bg {
+  @apply bg-brand-maroon;
+}
+
+.gold-button {
+  @apply bg-brand-gold hover:bg-brand-gold-light text-black font-bold transition-all duration-300 uppercase tracking-widest;
+}
+
+/* Quill Content Styles */
+.quill-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.quill-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.quill-content p {
+  margin-bottom: 0.5rem;
+}
+
+.quill-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0rem;
+  margin: 1rem 0;
+}
+
+.quill-content h1 { font-family: "Playfair Display", serif; font-size: 1.5rem; font-weight: bold; margin-top: 1rem; }
+.quill-content h2 { font-family: "Playfair Display", serif; font-size: 1.25rem; font-weight: bold; margin-top: 0.75rem; }
+.quill-content h3 { font-family: "Playfair Display", serif; font-size: 1.125rem; font-weight: bold; margin-top: 0.5rem; }
+
+.quill-content a {
+  @apply text-brand-gold underline;
+}
+
+.quill-content blockquote {
+  border-left: 4px solid #c5a059;
+  padding-left: 1rem;
+  font-style: italic;
+  margin: 1rem 0;
+}

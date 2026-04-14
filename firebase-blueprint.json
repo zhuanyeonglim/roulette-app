@@ -1,0 +1,105 @@
+{
+  "entities": {
+    "DateEntry": {
+      "title": "Date Entry",
+      "description": "A specific date entry with advice for the roulette wheel.",
+      "type": "object",
+      "properties": {
+        "entry_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date for which this advice applies."
+        },
+        "title": {
+          "type": "string",
+          "description": "A title for the day."
+        },
+        "label_id": {
+          "type": "string",
+          "description": "The ID of the activity label assigned to this date."
+        },
+        "do_text": {
+          "type": "string",
+          "description": "Advice on what to do."
+        },
+        "dont_text": {
+          "type": "string",
+          "description": "Advice on what not to do."
+        },
+        "short_summary": {
+          "type": "string",
+          "description": "A brief summary of the date's advice."
+        },
+        "animal_signs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Best fit animal signs."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "published"],
+          "description": "The publication status of the entry."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["entry_date", "status", "label_id"]
+    },
+    "ActivityLabel": {
+      "title": "Activity Label",
+      "description": "A custom activity label for the roulette wheel segments.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The display name of the activity."
+        },
+        "order": {
+          "type": "number",
+          "description": "The order in which the label appears on the wheel."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["name"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Admin user profile.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["admin", "editor"]
+        }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/date_entries/{entryId}": {
+      "schema": "DateEntry",
+      "description": "Collection of date-based advice entries."
+    },
+    "/activity_labels/{labelId}": {
+      "schema": "ActivityLabel",
+      "description": "Collection of custom activity labels for the wheel."
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of admin users."
+    }
+  }
+}

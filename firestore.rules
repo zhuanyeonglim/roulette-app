@@ -1,0 +1,118 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: date_entries
+    // Document ID: auto-generated
+    // Fields:
+    //   - entry_date: timestamp (required) - The date for the entry
+    //   - do_text: string (optional) - Advice on what to do
+    //   - dont_text: string (optional) - Advice on what not to do
+    //   - short_summary: string (optional) - Brief summary
+    //   - status: string (required, enum: ['draft', 'published'])
+    //   - created_at: timestamp (required)
+    //   - updated_at: timestamp (required)
+    //
+    // Collection: users
+    // Document ID: userId
+    // Fields:
+    //   - email: string (required)
+    //   - role: string (required, enum: ['admin'])
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "cody.lim@joeyyap.com" && request.auth.token.email_verified == true));
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidDateEntry(data) {
+      return hasRequiredFields(['entry_date', 'status', 'label_id', 'created_at', 'updated_at']) &&
+             data.entry_date is timestamp &&
+             data.status in ['draft', 'published'] &&
+             data.label_id is string &&
+             (!('title' in data) || (data.title is string && data.title.size() < 200)) &&
+             (!('do_text' in data) || (data.do_text is string && data.do_text.size() < 10000)) &&
+             (!('dont_text' in data) || (data.dont_text is string && data.dont_text.size() < 10000)) &&
+             (!('short_summary' in data) || (data.short_summary is string && data.short_summary.size() < 2000)) &&
+             (!('animal_signs' in data) || (data.animal_signs is list));
+    }
+
+    function isValidLabel(data) {
+      return hasRequiredFields(['name', 'created_at']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100;
+    }
+
+    function isValidUser(data) {
+      return hasRequiredFields(['email', 'role']) &&
+             isValidEmail(data.email) &&
+             data.role == 'admin';
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /date_entries/{entryId} {
+      // Public can read published entries
+      allow read: if resource.data.status == 'published';
+      
+      // Admins can do everything
+      allow create, update, delete: if isAdmin() && (request.method == 'delete' || isValidDateEntry(request.resource.data));
+      allow read: if isAdmin();
+    }
+
+    match /activity_labels/{labelId} {
+      // Public can read labels for the wheel
+      allow read: if true;
+      
+      // Only admins can manage labels
+      allow create, update, delete: if isAdmin() && (request.method == 'delete' || isValidLabel(request.resource.data));
+    }
+
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if isOwner(userId);
+      
+      // Only admins can manage users
+      allow create, update, delete: if isAdmin() && (request.method == 'delete' || isValidUser(request.resource.data));
+    }
+
+    // Default deny
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}
